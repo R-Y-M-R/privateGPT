@@ -3,12 +3,21 @@ from langchain.embeddings import LlamaCppEmbeddings
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.vectorstores import Chroma
 from langchain.llms import GPT4All
+from chromadb.config import Settings
 
-def main():        
+def main():
+    # Disable telemetery in chroma settings
+    persist_directory = 'db'
+    chroma_settings = Settings(
+	    chroma_db_impl='duckdb+parquet',
+		persist_directory=persist_directory,
+        anonymized_telemetry=False
+    )
+	
     # Load stored vectorstore
     llama = LlamaCppEmbeddings(model_path="./models/ggml-model-q4_0.bin")
     persist_directory = 'db'
-    db = Chroma(persist_directory=persist_directory, embedding_function=llama)
+    db = Chroma(persist_directory=persist_directory, embedding_function=llama, client_settings=chroma_settings)
     retriever = db.as_retriever()
     # Prepare the LLM
     callbacks = [StreamingStdOutCallbackHandler()]
