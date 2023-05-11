@@ -6,7 +6,7 @@ from sys import argv
 
 def main():
     # Load document and split in chunks
-    loader = TextLoader(argv[1], encoding="utf8")
+    loader = TextLoader(argv[1], encoding="ISO-8859-1") 
     documents = loader.load()
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     texts = text_splitter.split_documents(documents)
